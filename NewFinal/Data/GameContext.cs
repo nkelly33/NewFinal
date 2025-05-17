@@ -35,7 +35,7 @@ public class GameContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder options)
     {
         options 
-            .UseSqlServer("Server=bitsql.wctc.edu;Database=FinalDBData_20023_NJK;User Id=nkelly3;Password=000458363;")
+            .UseSqlServer("Server=bitsql.wctc.edu;Database=FinalDBData_20023_NJK;")
             .UseLazyLoadingProxies()
             .UseLoggerFactory(MyLoggerFactory)
             .EnableSensitiveDataLogging();
