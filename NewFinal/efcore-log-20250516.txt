@@ -1,0 +1,197 @@
+2025-05-16T18:59:15.9175688-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T18:59:17.5088993-05:00  [INF] Executed DbCommand ("29"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1" (0723d8ff)
+2025-05-16T18:59:17.6912302-05:00  [INF] Executed DbCommand ("63"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [FinalDBData_20023_NJK] SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+END;" (0723d8ff)
+2025-05-16T18:59:17.8545075-05:00  [INF] Executed DbCommand ("163"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""DROP DATABASE [FinalDBData_20023_NJK];" (0723d8ff)
+2025-05-16T18:59:49.0083910-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T19:08:16.1992421-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T19:08:30.4919046-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T19:08:31.6067548-05:00  [INF] Executed DbCommand ("622"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""CREATE DATABASE [FinalDBData_20023_NJK];" (0723d8ff)
+2025-05-16T19:08:32.1018705-05:00  [INF] Executed DbCommand ("493"ms) [Parameters=[""], CommandType='Text', CommandTimeout='60']"
+""IF SERVERPROPERTY('EngineEdition') <> 5
+BEGIN
+    ALTER DATABASE [FinalDBData_20023_NJK] SET READ_COMMITTED_SNAPSHOT ON;
+END;" (0723d8ff)
+2025-05-16T19:08:32.2374448-05:00  [INF] Executed DbCommand ("26"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1" (0723d8ff)
+2025-05-16T19:08:32.2380831-05:00  [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long. (a4825afd)
+2025-05-16T19:08:32.2751213-05:00  [INF] Executed DbCommand ("33"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result" (0723d8ff)
+2025-05-16T19:08:32.3538805-05:00  [INF] Executed DbCommand ("32"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;" (0723d8ff)
+2025-05-16T19:08:32.4290570-05:00  [INF] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1" (0723d8ff)
+2025-05-16T19:08:32.4526464-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');" (0723d8ff)
+2025-05-16T19:08:32.4767699-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];" (0723d8ff)
+2025-05-16T19:08:32.4811418-05:00  [INF] Applying migration '"20250517000816_InitialCreate"'. (0e2ac64d)
+2025-05-16T19:08:32.5237488-05:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Monsters] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Health] int NOT NULL,
+    [AggressionLevel] int NOT NULL,
+    [MonsterType] nvarchar(max) NOT NULL,
+    [AttackPower] int NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    CONSTRAINT [PK_Monsters] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2025-05-16T19:08:32.5539431-05:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Rooms] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [NorthRoomId] int NULL,
+    [SouthRoomId] int NULL,
+    [EastRoomId] int NULL,
+    [WestRoomId] int NULL,
+    CONSTRAINT [PK_Rooms] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Rooms_Rooms_EastRoomId] FOREIGN KEY ([EastRoomId]) REFERENCES [Rooms] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Rooms_Rooms_NorthRoomId] FOREIGN KEY ([NorthRoomId]) REFERENCES [Rooms] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Rooms_Rooms_SouthRoomId] FOREIGN KEY ([SouthRoomId]) REFERENCES [Rooms] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Rooms_Rooms_WestRoomId] FOREIGN KEY ([WestRoomId]) REFERENCES [Rooms] ([Id]) ON DELETE NO ACTION
+);" (0723d8ff)
+2025-05-16T19:08:32.5828624-05:00  [INF] Executed DbCommand ("29"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Ability] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Description] nvarchar(max) NOT NULL,
+    [AbilityType] nvarchar(max) NOT NULL,
+    [AttackBonus] int NOT NULL,
+    [DefenseBonus] int NOT NULL,
+    [AbilityId] int NULL,
+    [Discriminator] nvarchar(21) NOT NULL,
+    [PlayerId] int NULL,
+    [Damage] int NULL,
+    [ManaCost] int NULL,
+    [PhysicalAbility_Damage] int NULL,
+    CONSTRAINT [PK_Ability] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Ability_Ability_AbilityId] FOREIGN KEY ([AbilityId]) REFERENCES [Ability] ([Id])
+);" (0723d8ff)
+2025-05-16T19:08:32.6078527-05:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Equipment] (
+    [Id] int NOT NULL IDENTITY,
+    [WeaponId] int NULL,
+    [ArmorId] int NULL,
+    CONSTRAINT [PK_Equipment] PRIMARY KEY ([Id])
+);" (0723d8ff)
+2025-05-16T19:08:32.6376872-05:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Players] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Level] int NOT NULL,
+    [Gold] int NOT NULL,
+    [Health] int NOT NULL,
+    [EquipmentId] int NULL,
+    [RoomId] int NULL,
+    [AbilityId] int NULL,
+    CONSTRAINT [PK_Players] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Players_Ability_AbilityId] FOREIGN KEY ([AbilityId]) REFERENCES [Ability] ([Id]) ON DELETE NO ACTION,
+    CONSTRAINT [FK_Players_Equipment_EquipmentId] FOREIGN KEY ([EquipmentId]) REFERENCES [Equipment] ([Id]) ON DELETE SET NULL,
+    CONSTRAINT [FK_Players_Rooms_RoomId] FOREIGN KEY ([RoomId]) REFERENCES [Rooms] ([Id]) ON DELETE SET NULL
+);" (0723d8ff)
+2025-05-16T19:08:32.6675136-05:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE TABLE [Items] (
+    [Id] int NOT NULL IDENTITY,
+    [Name] nvarchar(max) NOT NULL,
+    [Type] nvarchar(max) NOT NULL,
+    [Attack] int NOT NULL,
+    [PlayerId] int NULL,
+    CONSTRAINT [PK_Items] PRIMARY KEY ([Id]),
+    CONSTRAINT [FK_Items_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE CASCADE
+);" (0723d8ff)
+2025-05-16T19:08:32.6911627-05:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Ability_AbilityId] ON [Ability] ([AbilityId]);" (0723d8ff)
+2025-05-16T19:08:32.7142785-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Ability_PlayerId] ON [Ability] ([PlayerId]);" (0723d8ff)
+2025-05-16T19:08:32.7391057-05:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Equipment_ArmorId] ON [Equipment] ([ArmorId]);" (0723d8ff)
+2025-05-16T19:08:32.7618774-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Equipment_WeaponId] ON [Equipment] ([WeaponId]);" (0723d8ff)
+2025-05-16T19:08:32.7844627-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Items_PlayerId] ON [Items] ([PlayerId]);" (0723d8ff)
+2025-05-16T19:08:32.8099656-05:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Players_AbilityId] ON [Players] ([AbilityId]);" (0723d8ff)
+2025-05-16T19:08:32.8330966-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Players_EquipmentId] ON [Players] ([EquipmentId]);" (0723d8ff)
+2025-05-16T19:08:32.8574379-05:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Players_RoomId] ON [Players] ([RoomId]);" (0723d8ff)
+2025-05-16T19:08:32.8804557-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Rooms_EastRoomId] ON [Rooms] ([EastRoomId]);" (0723d8ff)
+2025-05-16T19:08:32.9123014-05:00  [INF] Executed DbCommand ("32"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Rooms_NorthRoomId] ON [Rooms] ([NorthRoomId]);" (0723d8ff)
+2025-05-16T19:08:32.9342976-05:00  [INF] Executed DbCommand ("22"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Rooms_SouthRoomId] ON [Rooms] ([SouthRoomId]);" (0723d8ff)
+2025-05-16T19:08:32.9571834-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Rooms_WestRoomId] ON [Rooms] ([WestRoomId]);" (0723d8ff)
+2025-05-16T19:08:32.9839231-05:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""ALTER TABLE [Ability] ADD CONSTRAINT [FK_Ability_Players_PlayerId] FOREIGN KEY ([PlayerId]) REFERENCES [Players] ([Id]) ON DELETE NO ACTION;" (0723d8ff)
+2025-05-16T19:08:33.0107544-05:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""ALTER TABLE [Equipment] ADD CONSTRAINT [FK_Equipment_Items_ArmorId] FOREIGN KEY ([ArmorId]) REFERENCES [Items] ([Id]);" (0723d8ff)
+2025-05-16T19:08:33.0370885-05:00  [INF] Executed DbCommand ("26"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""ALTER TABLE [Equipment] ADD CONSTRAINT [FK_Equipment_Items_WeaponId] FOREIGN KEY ([WeaponId]) REFERENCES [Items] ([Id]);" (0723d8ff)
+2025-05-16T19:08:33.0626297-05:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250517000816_InitialCreate', N'9.0.5');" (0723d8ff)
+2025-05-16T19:08:33.1116556-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result" (0723d8ff)
+2025-05-16T19:39:11.9794340-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T19:39:30.2981346-05:00  [WRN] Sensitive data logging is enabled. Log entries and exception messages may include sensitive application data; this mode should only be enabled during development. (4007092b)
+2025-05-16T19:39:30.7245021-05:00  [INF] Executed DbCommand ("30"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1" (0723d8ff)
+2025-05-16T19:39:30.7286939-05:00  [INF] Acquiring an exclusive lock for migration application. See https://aka.ms/efcore-docs-migrations-lock for more information if this takes too long. (a4825afd)
+2025-05-16T19:39:30.7652671-05:00  [INF] Executed DbCommand ("32"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""DECLARE @result int;
+EXEC @result = sp_getapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session', @LockMode = 'Exclusive';
+SELECT @result" (0723d8ff)
+2025-05-16T19:39:30.8387889-05:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""IF OBJECT_ID(N'[__EFMigrationsHistory]') IS NULL
+BEGIN
+    CREATE TABLE [__EFMigrationsHistory] (
+        [MigrationId] nvarchar(150) NOT NULL,
+        [ProductVersion] nvarchar(32) NOT NULL,
+        CONSTRAINT [PK___EFMigrationsHistory] PRIMARY KEY ([MigrationId])
+    );
+END;" (0723d8ff)
+2025-05-16T19:39:30.9119919-05:00  [INF] Executed DbCommand ("25"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT 1" (0723d8ff)
+2025-05-16T19:39:30.9396080-05:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT OBJECT_ID(N'[__EFMigrationsHistory]');" (0723d8ff)
+2025-05-16T19:39:30.9639400-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""SELECT [MigrationId], [ProductVersion]
+FROM [__EFMigrationsHistory]
+ORDER BY [MigrationId];" (0723d8ff)
+2025-05-16T19:39:30.9686772-05:00  [INF] Applying migration '"20250517003912_AddMonsterRoomRelationship"'. (0e2ac64d)
+2025-05-16T19:39:31.0058103-05:00  [INF] Executed DbCommand ("27"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""ALTER TABLE [Monsters] ADD [RoomId] int NULL;" (0723d8ff)
+2025-05-16T19:39:31.0299569-05:00  [INF] Executed DbCommand ("24"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""CREATE INDEX [IX_Monsters_RoomId] ON [Monsters] ([RoomId]);" (0723d8ff)
+2025-05-16T19:39:31.0842939-05:00  [INF] Executed DbCommand ("54"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""ALTER TABLE [Monsters] ADD CONSTRAINT [FK_Monsters_Rooms_RoomId] FOREIGN KEY ([RoomId]) REFERENCES [Rooms] ([Id]);" (0723d8ff)
+2025-05-16T19:39:31.1073125-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""INSERT INTO [__EFMigrationsHistory] ([MigrationId], [ProductVersion])
+VALUES (N'20250517003912_AddMonsterRoomRelationship', N'9.0.5');" (0723d8ff)
+2025-05-16T19:39:31.1557460-05:00  [INF] Executed DbCommand ("23"ms) [Parameters=[""], CommandType='Text', CommandTimeout='30']"
+""DECLARE @result int;
+EXEC @result = sp_releaseapplock @Resource = '__EFMigrationsLock', @LockOwner = 'Session';
+SELECT @result" (0723d8ff)
