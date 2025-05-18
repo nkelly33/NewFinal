@@ -18,9 +18,11 @@ namespace NewFinal.Services
         {
             while (true)
             {
+                Console.WriteLine("Welcome to the God Game");
+                Console.WriteLine("This is where you are a god and decide where everyting is and what everything does");
                 Console.WriteLine("\n--- Main Menu ---");
-                Console.WriteLine("1. Start Game");
-                Console.WriteLine("2. Open Game Manager");
+                Console.WriteLine("1. Start God Game");
+                Console.WriteLine("2. Open God Manager");
                 Console.WriteLine("0. Exit");
                 Console.Write("Select an option: ");
                 var input = Console.ReadLine();
@@ -28,6 +30,7 @@ namespace NewFinal.Services
                 switch (input)
                 {
                     case "1":
+
                         _gameEngine.Run();
                         break;
                     case "2":

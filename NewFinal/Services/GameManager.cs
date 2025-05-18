@@ -6,6 +6,8 @@ using NewFinal.Data;
 using NewFinal.Models.Characters;
 using NewFinal.Models.Abilities;
 using NewFinal.Models;
+using System.Numerics;
+using NewFinal.Models.Equipments;
 
 public class GameManager
 {
@@ -21,14 +23,62 @@ public class GameManager
     {
         Console.Write("Enter character name: ");
         var name = Console.ReadLine();
+
         Console.Write("Enter health: ");
-        var health = int.Parse(Console.ReadLine() ?? "0");
+        var health = int.TryParse(Console.ReadLine(), out var h) ? h : 100;
+
         Console.Write("Enter level: ");
-        var level = int.Parse(Console.ReadLine() ?? "1");
+        var level = int.TryParse(Console.ReadLine(), out var l) ? l : 1;
+
         Console.Write("Enter gold: ");
-        var gold = int.Parse(Console.ReadLine() ?? "0");
+        var gold = int.TryParse(Console.ReadLine(), out var g) ? g : 0;
 
+        // Assign starting equipment
+        Equipment? equipment = null;
+        Console.Write("Assign starting equipment? (y/n): ");
+        if (Console.ReadLine()?.Trim().ToLower() == "y")
+        {
+            equipment = new Equipment();
 
+            // Weapon selection
+            var weapons = _context.Items.Where(i => i.Type.ToLower() == "weapon").ToList();
+            if (weapons.Any())
+            {
+                Console.WriteLine("Available weapons:");
+                for (int i = 0; i < weapons.Count; i++)
+                    Console.WriteLine($"{i + 1}. {weapons[i].Name} (Atk: {weapons[i].Attack})");
+                Console.Write("Select weapon by number (or 0 for none): ");
+                if (int.TryParse(Console.ReadLine(), out int wIdx) && wIdx > 0 && wIdx <= weapons.Count)
+                    equipment.Weapon = weapons[wIdx - 1];
+            }
+
+            // Armor selection
+            var armors = _context.Items.Where(i => i.Type.ToLower() == "armor").ToList();
+            if (armors.Any())
+            {
+                Console.WriteLine("Available armors:");
+                for (int i = 0; i < armors.Count; i++)
+                    Console.WriteLine($"{i + 1}. {armors[i].Name}");
+                Console.Write("Select armor by number (or 0 for none): ");
+                if (int.TryParse(Console.ReadLine(), out int aIdx) && aIdx > 0 && aIdx <= armors.Count)
+                    equipment.Armor = armors[aIdx - 1];
+            }
+
+            _context.Equipment.Add(equipment);
+        }
+
+        // Assign starting room
+        Room? room = null;
+        var rooms = _context.Rooms.ToList();
+        if (rooms.Any())
+        {
+            Console.WriteLine("Available starting rooms:");
+            for (int i = 0; i < rooms.Count; i++)
+                Console.WriteLine($"{i + 1}. {rooms[i].Name}");
+            Console.Write("Select starting room by number (or 0 for none): ");
+            if (int.TryParse(Console.ReadLine(), out int rIdx) && rIdx > 0 && rIdx <= rooms.Count)
+                room = rooms[rIdx - 1];
+        }
 
         var player = new Player
         {
@@ -36,9 +86,11 @@ public class GameManager
             Health = health,
             Level = level,
             Gold = gold,
+            Equipment = equipment,
             Inventory = new List<NewFinal.Models.Equipments.Item>(),
             Abilities = new List<Ability>(),
-            Room = _context.Rooms.FirstOrDefault()
+            Room = room,
+            RoomId = room?.Id
         };
 
         _context.Players.Add(player);
@@ -264,6 +316,7 @@ public class GameManager
                 continue;
             }
             player.Room = nextRoom;
+            player.RoomId = nextRoom.Id;
             _context.SaveChanges();
             Console.WriteLine($"Moved to {nextRoom.Name}: {nextRoom.Description}");
         }
@@ -326,4 +379,104 @@ public class GameManager
             Console.WriteLine("Item not found.");
         }
     }
+    public void DisplayAllMonsters()
+    {
+        var monsters = _context.Monsters.Include(m => m.Room).ToList();
+        foreach (var m in monsters)
+            Console.WriteLine($"{m.Name} (HP: {m.Health}, Atk: {m.AttackPower}) in Room: {m.Room?.Name ?? "None"}");
+    }
+
+    public void DisplayAllRooms()
+    {
+        var rooms = _context.Rooms.Include(r => r.Players).Include(r => r.Monsters).ToList();
+        foreach (var r in rooms)
+        {
+            Console.WriteLine($"Room: {r.Name} - {r.Description}");
+            Console.WriteLine("  Players: " + (r.Players.Any() ? string.Join(", ", r.Players.Select(p => p.Name)) : "None"));
+            Console.WriteLine("  Monsters: " + (r.Monsters.Any() ? string.Join(", ", r.Monsters.Select(m => m.Name)) : "None"));
+        }
+    }
+    public void DeleteAllPlayers()
+    {
+        Console.WriteLine("Are you sure you want to remove the player");
+        Console.WriteLine("1. Yes");
+        Console.WriteLine("2. No");
+        var choice = Console.ReadLine();
+        if (choice != "1")
+        {
+            Console.WriteLine("Player deletion cancelled.");
+            return;
+        }
+        var players = _context.Players
+            .Include(p => p.Equipment)
+            .Include(p => p.Abilities)
+            .ToList();
+
+        foreach (var player in players)
+        {
+            // Remove abilities
+            if (player.Abilities != null && player.Abilities.Any())
+            {
+                _context.RemoveRange(player.Abilities);
+            }
+
+            // Remove equipment (with FK nulling as before)
+            if (player.Equipment != null)
+            {
+                player.Equipment.WeaponId = null;
+                player.Equipment.ArmorId = null;
+                _context.SaveChanges();
+                _context.Equipment.Remove(player.Equipment);
+            }
+        }
+
+        _context.Players.RemoveRange(players);
+        _context.SaveChanges();
+        Console.WriteLine("All players have been deleted.");
+    }
+
+    public void DeletePlayerByName()
+    {
+        Console.Write("Enter the name of the player to delete: ");
+        var name = Console.ReadLine();
+        var player = _context.Players
+            .Include(p => p.Equipment)
+            .Include(p => p.Abilities)
+            .FirstOrDefault(p => p.Name.ToLower() == name.ToLower());
+        Console.WriteLine("Are you sure you want to remove the player");
+        Console.WriteLine("1. Yes");
+        Console.WriteLine("2. No");
+        var choice = Console.ReadLine();
+        if (choice != "1")
+        {
+            Console.WriteLine("Player deletion cancelled.");
+            return;
+        }
+        // Remove the player
+        if (player == null)
+        {
+            Console.WriteLine("Player not found.");
+            return;
+        }
+
+        // Remove abilities
+        if (player.Abilities != null && player.Abilities.Any())
+        {
+            _context.RemoveRange(player.Abilities);
+        }
+
+        // Remove equipment (with FK nulling as before)
+        if (player.Equipment != null)
+        {
+            player.Equipment.WeaponId = null;
+            player.Equipment.ArmorId = null;
+            _context.SaveChanges();
+            _context.Equipment.Remove(player.Equipment);
+        }
+
+        _context.Players.Remove(player);
+        _context.SaveChanges();
+        Console.WriteLine($"Player '{name}' has been deleted.");
+    }
+
 }

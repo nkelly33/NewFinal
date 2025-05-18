@@ -31,9 +31,20 @@ public class Player : ITargetable, IPlayer
 
     public void Attack(ITargetable target)
     {
+        if (Equipment == null || Equipment.Weapon == null)
+        {
+            Console.WriteLine($"{Name} has no weapon equipped and cannot attack!");
+            return;
+        }
+
         Console.WriteLine($"{Name} attacks {target.Name} with a {Equipment.Weapon.Name} dealing {Equipment.Weapon.Attack} damage!");
         target.Health -= Equipment.Weapon.Attack;
         Console.WriteLine($"{target.Name} has {target.Health} health remaining.");
+        if (target.Health <= 0)
+        {
+            Console.WriteLine($"{target.Name} has been defeated!");
+            
+        }
     }
 
 

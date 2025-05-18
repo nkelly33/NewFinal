@@ -67,7 +67,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Ability");
+                    b.ToTable("Ability", (string)null);
 
                     b.HasDiscriminator().HasValue("Ability");
 
@@ -110,7 +110,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Monsters");
+                    b.ToTable("Monsters", (string)null);
                 });
 
             modelBuilder.Entity("NewFinal.Models.Characters.Player", b =>
@@ -151,7 +151,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("Players");
+                    b.ToTable("Players", (string)null);
                 });
 
             modelBuilder.Entity("NewFinal.Models.Equipments.Equipment", b =>
@@ -174,7 +174,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("WeaponId");
 
-                    b.ToTable("Equipment");
+                    b.ToTable("Equipment", (string)null);
                 });
 
             modelBuilder.Entity("NewFinal.Models.Equipments.Item", b =>
@@ -203,7 +203,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("PlayerId");
 
-                    b.ToTable("Items");
+                    b.ToTable("Items", (string)null);
                 });
 
             modelBuilder.Entity("NewFinal.Models.Room", b =>
@@ -244,7 +244,7 @@ namespace NewFinal.Migrations
 
                     b.HasIndex("WestRoomId");
 
-                    b.ToTable("Rooms");
+                    b.ToTable("Rooms", (string)null);
                 });
 
             modelBuilder.Entity("NewFinal.Models.Abilities.MagicAbility", b =>
@@ -267,7 +267,7 @@ namespace NewFinal.Migrations
                     b.Property<int>("Damage")
                         .HasColumnType("int");
 
-                    b.ToTable("Ability", t =>
+                    b.ToTable("Ability", null, t =>
                         {
                             t.Property("Damage")
                                 .HasColumnName("PhysicalAbility_Damage");

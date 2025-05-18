@@ -17,7 +17,7 @@ namespace NewFinal
         {
             while (true)
             {
-                Console.WriteLine("\n--- Game Manager Menu ---");
+                Console.WriteLine("\n--- God Manager Menu ---");
                 Console.WriteLine("1. Add Character");
                 Console.WriteLine("2. Edit Character");
                 Console.WriteLine("3. Display All Characters");
@@ -31,6 +31,8 @@ namespace NewFinal
                 Console.WriteLine("11. List All Rooms with Characters");
                 Console.WriteLine("12. List Characters in Room by Attribute");
                 Console.WriteLine("13. Find Equipment Holder");
+                Console.WriteLine("14. Delete All Players");
+                Console.WriteLine("15. Delete Player By Name");
                 Console.WriteLine("0. Exit");
                 Console.Write("Select an option: ");
                 var input = Console.ReadLine();
@@ -50,6 +52,8 @@ namespace NewFinal
                     case "11": _manager.ListAllRoomsWithCharacters(); break;
                     case "12": _manager.ListCharactersInRoomByAttribute(); break;
                     case "13": _manager.FindEquipmentHolder(); break;
+                    case "14": _manager.DeleteAllPlayers(); break;
+                    case "15": _manager.DeletePlayerByName(); break;
                     case "0": Console.WriteLine("Exiting..."); return;
                     default: Console.WriteLine("Invalid option. Try again."); break;
                 }

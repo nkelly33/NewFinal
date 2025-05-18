@@ -8,6 +8,8 @@ using NewFinal.Models.Characters;
 using NewFinal.Models.Characters.Enemy;
 using NewFinal.Services;
 using NewFinal.Data;
+using NewFinal.Models.Abilities;
+using NewFinal.Models.Equipments;
 
 public class GameEngine
 {
@@ -17,6 +19,11 @@ public class GameEngine
     private List<Room> _rooms;
     private Player _player;
     private List<Monster> _monsters;
+    private List<Item> _items;
+    private List<Ability> _abilities;
+    private List<Equipment> _equipments;
+
+
 
     public GameEngine(GameContext context, MapManager mapManager, OutputManager outputManager)
     {
@@ -54,6 +61,11 @@ public class GameEngine
             .Include(p => p.Inventory)
             .Include(p => p.Abilities)
             .FirstOrDefault();
+
+        if (_player == null)
+        {
+            _player = PromptCreatePlayer();
+        }
 
         if (_player == null)
         {
@@ -138,6 +150,20 @@ public class GameEngine
             _player.Room = nextRoom;
             _context.SaveChanges();
             _outputManager.WriteLine($"You move {direction} to {nextRoom.Name}.");
+            _outputManager.WriteLine($"{nextRoom.Description}");
+
+            // Show monsters in the room
+            var monsters = _context.Monsters.Where(m => m.RoomId == nextRoom.Id).ToList();
+            if (monsters.Any())
+            {
+                _outputManager.WriteLine("You see:");
+                foreach (var m in monsters)
+                    _outputManager.WriteLine($"- {m.Name} (HP: {m.Health})");
+            }
+            else
+            {
+                _outputManager.WriteLine("The room is quiet. No monsters here.");
+            }
         }
         else
         {
@@ -208,6 +234,43 @@ public class GameEngine
         }
 
         _context.SaveChanges();
+    }
+    private Player PromptCreatePlayer()
+    {
+        _outputManager.WriteLine("No player found. Let's create your Fighter!");
+        _outputManager.Display();
+
+        _outputManager.Write("Enter player name: ");
+        _outputManager.Display();
+        var name = Console.ReadLine();
+
+        _outputManager.Write("Enter starting health: ");
+        _outputManager.Display();
+        int.TryParse(Console.ReadLine(), out int health);
+
+        _outputManager.Write("Enter starting level: ");
+        _outputManager.Display();
+        int.TryParse(Console.ReadLine(), out int level);
+
+        _outputManager.Write("Enter starting gold: ");
+        _outputManager.Display();
+        int.TryParse(Console.ReadLine(), out int gold);
+
+        var player = new Player
+        {
+            Name = name,
+            Health = health > 0 ? health : 100,
+            Level = level > 0 ? level : 1,
+            Gold = gold,
+            Inventory = new List<Item>(),
+            Abilities = new List<Ability>()
+        };
+
+        _context.Players.Add(player);
+        _context.SaveChanges();
+        _outputManager.WriteLine($"Player '{name}' created!");
+        _outputManager.Display();
+        return player;
     }
 
 }
